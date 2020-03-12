@@ -30,8 +30,54 @@ class Parser {
         });
     }
 
+    setParent(){
+        const tokensList = [...this.tokens];
+        for (const [i,value] of this.tokens.entries()) {
+            const classifier = value[0];
+            if(i > 0){
+                const newTokenList = tokensList.slice(0,i);
+                for (const tokens of newTokenList) {
+                    const id = tokens[0];
+
+                }
+            }
+            else {
+                value.push(null);
+            }
+            
+        }
+    }
+
     returnCollection(){
         this.parserTokenizer();
+        //this.setParent();
+    }
+
+    checkIfClassMatch(classParent, classChild){
+        for (let index = 0; index < classParent.length; index++) {
+            if(!this.compareClassifiers(classParent, classChild, index)){
+                if(index > 0){
+                    return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
+                }else{
+                    return false;
+                }
+            }
+        }
+    }
+
+    compareClassifiers(classifier1, classifier2, index){
+        return classifier1[index] == classifier2[index];
+    }
+
+    checkRestOfClassifier(classifier){
+        let restIsZero = true;
+        classifier.some((c) => {
+            if(c !== '0'){
+                restIsZero = false;
+                break;
+            }
+        })
+        return restIsZero;
     }
 }
 
