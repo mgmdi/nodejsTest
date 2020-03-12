@@ -33,11 +33,15 @@ class Parser {
     setParent(){
         const tokensList = [...this.tokens];
         for (const [i,value] of this.tokens.entries()) {
-            const classifier = value[0];
+            const childClassifier = value[0];
             if(i > 0){
                 const newTokenList = tokensList.slice(0,i);
                 for (const tokens of newTokenList) {
-                    const id = tokens[0];
+                    const parentCandidate = tokens[0];
+                    if(this.checkIfClassMatch(parentCandidate, childClassifier))
+                    {
+                        value.push(parentCandidate);
+                    }
 
                 }
             }
