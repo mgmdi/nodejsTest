@@ -81,6 +81,7 @@ class Parser {
         this.parserTokenizer();
         this.setParent();
         this.convertToObjects();
+        console.log(this.objects);
         return this.objects
     }
 

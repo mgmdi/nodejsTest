@@ -48,16 +48,12 @@ class Parser {
                     tokenizer.rule('word', word_rule);
                     const tokList = tokenizer.tokenize(line);
                     this.tokens.push(this.convertTokensToTypes(tokList));
-                    //console.log('TOKENS')
-                    //console.log(this.tokens) 
                 }
             }
         });
     }
 
     convertTokensToTypes(tokList){
-        console.log('ESTE ES TOK LIST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
-        console.log(tokList)
         tokList = tokList.filter( value => value.toLowerCase() !== 'd' && value.toLowerCase() !==  'c');
         if(this.level == '4'){
             tokList.shift();
@@ -81,16 +77,12 @@ class Parser {
         const tokensList = [...this.tokens];
         for (const [i,value] of this.tokens.entries()) {
             const childClassifier = value[0];
-            console.log('CHILD CLASSIFIER -----------------')
-            console.log(childClassifier)
             const newTokenList = tokensList.slice(0,i).reverse();
             for (const tokens of newTokenList) {
                 const parentCandidate = tokens[0];
                 if(this.checkIfClassMatch(parentCandidate, childClassifier))
                 {
                     value.push(parentCandidate);
-                    console.log('PARENT')
-                    console.log(parentCandidate)
                     break;
                 }
 

@@ -43,8 +43,6 @@ class Parser {
                     tokenizer.rule('word', /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/);
                     const tokList = tokenizer.tokenize(line);
                     this.tokens.push(this.convertTokensToTypes(tokList));
-                    console.log('TOKENS')
-                    console.log(this.tokens) 
                 }
             }
         });
@@ -71,16 +69,12 @@ class Parser {
         const tokensList = [...this.tokens];
         for (const [i,value] of this.tokens.entries()) {
             const childClassifier = value[0];
-            console.log('CHILD CLASSIFIER -----------------')
-            console.log(childClassifier)
             const newTokenList = tokensList.slice(0,i).reverse();
             for (const tokens of newTokenList) {
                 const parentCandidate = tokens[0];
                 if(this.checkIfClassMatch(parentCandidate, childClassifier))
                 {
                     value.push(parentCandidate);
-                    console.log('PARENT')
-                    console.log(parentCandidate)
                     break;
                 }
 
@@ -124,8 +118,8 @@ class Parser {
     */
     checkIfClassMatch(classParent, classChild){
         for (let index = 0; index < classChild.length; index++) {
-            const parentClassLessTChild = this.level === '2' ? classParent.length < classChild.length : (this.level === '3' ? classParent.length < classChild.length : true);
             if(!this.compareClassifiers(classParent, classChild, index)){
+                const parentClassLessTChild = this.level === '2' ? classParent.length < classChild.length : (this.level === '3' ? classParent.length < classChild.length : true);
                 if(index > 0 && parentClassLessTChild){
                     return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
                 }else{
