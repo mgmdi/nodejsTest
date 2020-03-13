@@ -24,15 +24,35 @@ class Parser {
             case '1':
                 file = fs.readFileSync('./test_1', 'utf8'); 
                 break;
+            case '2':
+                file = fs.readFileSync('./test_2', 'utf8'); 
+                break;
         }
         const lines = file.split(/\r?\n/);
         // tokenize all lines
         tokenizer.debug = true;
         lines.forEach((line) => {
-            tokenizer.rule('number', /^\d+(\.\d+)?/);
-            tokenizer.rule('word', /[A-Za-z(\s)*]+/);
-            this.tokens.push(tokenizer.tokenize(line));
+            if(/\S/.test(line)){
+                tokenizer.rule('number', /^[\d\.,\-]+D?/);
+                tokenizer.rule('word', /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/);
+                const tokList = tokenizer.tokenize(line);
+                this.tokens.push(this.convertTokens(tokList));
+                console.log('TOKENS')
+                console.log(this.tokens)
+            }
         });
+    }
+
+    convertTokens(tokList){
+        const descriptionHasNumber = tokList.length > 6;
+        const classifier = tokList[0].replace(/\./g,'');
+        const description = descriptionHasNumber ? tokList[1] + ' ' + tokList[2] : tokList[1];
+        const openingBalance = descriptionHasNumber ? tokList[3].replace(/\./g,'').replace(',','.') : tokList[2].replace(/\./g,'').replace(',','.');
+        const debit = descriptionHasNumber ? tokList[4].replace(/\./g,'').replace(',','.') : tokList[3].replace(/\./g,'').replace(',','.');
+        const credit = descriptionHasNumber ? tokList[5].replace(/\./g,'').replace(',','.') : tokList[4].replace(/\./g,'').replace(',','.');
+        const finalBalance = descriptionHasNumber ? tokList[6].replace(/\./g,'').replace(',','.') : tokList[5].replace(/\./g,'').replace(',','.'); 
+        const list = [classifier, description, parseFloat(openingBalance), parseFloat(debit), parseFloat(credit), parseFloat(finalBalance)];
+        return list;
     }
     // METHODS TO CONVERT TOKENS INTO OBJECTS
 
@@ -79,9 +99,9 @@ class Parser {
     */
     returnCollection(){
         this.parserTokenizer();
-        this.setParent();
-        this.convertToObjects();
-        console.log(this.objects)
+        // this.setParent();
+        // this.convertToObjects();
+        // console.log(this.objects)
     }
 
     // METHODS FOR CHECKING CLASSIFIER
@@ -123,7 +143,7 @@ class Parser {
 /* Main function */
 main = () => {
     const level = process.argv[2];
-    if(['1'].includes(level)){
+    if(['1', '2'].includes(level)){
         const parser = new Parser(process.argv[2]);
         parser.returnCollection();
     }
