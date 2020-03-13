@@ -114,6 +114,7 @@ class Parser {
         this.setParent();
         this.convertToObjects();
         console.log(this.objects)
+        return this.objects
     }
 
     // METHODS FOR CHECKING CLASSIFIER
@@ -123,8 +124,9 @@ class Parser {
     */
     checkIfClassMatch(classParent, classChild){
         for (let index = 0; index < classChild.length; index++) {
+            const parentClassLessTChild = this.level === '2' ? classParent.length < classChild.length : (this.level === '3' ? classParent.length < classChild.length : true);
             if(!this.compareClassifiers(classParent, classChild, index)){
-                if(index > 0){
+                if(index > 0 && parentClassLessTChild){
                     return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
                 }else{
                     return false;
@@ -151,6 +153,10 @@ class Parser {
         }
         return true;
     }
+
+    getConvertedObjects(){
+        return this.objects;
+    }
 }
 /* Main function */
 main = () => {
@@ -163,3 +169,5 @@ main = () => {
 }
 
 main();
+
+module.exports = Parser;

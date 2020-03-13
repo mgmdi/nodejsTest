@@ -36,24 +36,28 @@ class Parser {
         }
         const lines = file.split(/\r?\n/);
         // tokenize all lines
+        const word_rule = this.level !== '4' ? /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/ : /^[A-Za-z\u00C0-\u00ff\s\.\-/]+:?[A-Za-z]/;
         tokenizer.debug = true;
         lines.forEach((line) => {
             if(/\S/.test(line)){
                 if(!/^[a-zA-Z\-]+/.test(line) && !line.startsWith('-')){
                     // Prepare line
+                    
                     line = line.replace(/\*/g, '');
                     tokenizer.rule('number', /^[\d\.,\-/]+(D|C)?/);
-                    tokenizer.rule('word', /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/);
+                    tokenizer.rule('word', word_rule);
                     const tokList = tokenizer.tokenize(line);
                     this.tokens.push(this.convertTokensToTypes(tokList));
-                    console.log('TOKENS')
-                    console.log(this.tokens) 
+                    //console.log('TOKENS')
+                    //console.log(this.tokens) 
                 }
             }
         });
     }
 
     convertTokensToTypes(tokList){
+        console.log('ESTE ES TOK LIST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
+        console.log(tokList)
         tokList = tokList.filter( value => value.toLowerCase() !== 'd' && value.toLowerCase() !==  'c');
         if(this.level == '4'){
             tokList.shift();
@@ -119,7 +123,8 @@ class Parser {
         this.parserTokenizer();
         this.setParent();
         this.convertToObjects();
-        console.log(this.objects) 
+        console.log(this.objects)
+        return this.objects 
     }
 
     // METHODS FOR CHECKING CLASSIFIER
@@ -130,7 +135,8 @@ class Parser {
     checkIfClassMatch(classParent, classChild){
         for (let index = 0; index < classChild.length; index++) {
             if(!this.compareClassifiers(classParent, classChild, index)){
-                if(index > 0){
+                const parentClassLessTChild = this.level === '2' ? classParent.length < classChild.length : (this.level === '3' ? classParent.length < classChild.length : true);
+                if(index > 0 && parentClassLessTChild){
                     return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
                 }else{
                     return false;
@@ -157,6 +163,10 @@ class Parser {
         }
         return true;
     }
+
+    getConvertedObjects(){
+        return this.objects;
+    }
 }
 /* Main function */
 main = () => {
@@ -169,3 +179,5 @@ main = () => {
 }
 
 main();
+
+module.exports = Parser;

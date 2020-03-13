@@ -65,9 +65,14 @@ class Parser {
             const childClassifier = value[0];
             console.log('CHILD CLASSIFIER -----------------')
             console.log(childClassifier)
+            console.log('TOKEN LIST')
             const newTokenList = tokensList.slice(0,i).reverse();
+            console.log('TOKEN LIST')
+            console.log(newTokenList)
             for (const tokens of newTokenList) {
                 const parentCandidate = tokens[0];
+                console.log('CONSIDERING TOKEN!!!!!!!!!!!!!!!!!!!')
+                console.log(tokens)
                 if(this.checkIfClassMatch(parentCandidate, childClassifier))
                 {
                     value.push(parentCandidate);
@@ -106,6 +111,7 @@ class Parser {
         this.setParent();
         this.convertToObjects();
         console.log(this.objects)
+        return this.objects
     }
 
     // METHODS FOR CHECKING CLASSIFIER
@@ -116,7 +122,8 @@ class Parser {
     checkIfClassMatch(classParent, classChild){
         for (let index = 0; index < classChild.length; index++) {
             if(!this.compareClassifiers(classParent, classChild, index)){
-                if(index > 0){
+                const parentClassLessTChild = this.level === '2' ? classParent.length < classChild.length : true;
+                if(index > 0 && parentClassLessTChild){
                     return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
                 }else{
                     return false;
@@ -136,12 +143,18 @@ class Parser {
     Method that check rest of classifier after checkIfClassMatch
     */
     checkRestOfClassifier(classifier){
+        console.log('CLASSIFIER')
+        console.log(classifier)
         for (let index = 0; classifier && index < classifier.length; index++) {
             if(classifier.charAt(index) !== '0'){
                 return false;
             }
         }
         return true;
+    }
+
+    getConvertedObjects(){
+        return this.objects;
     }
 }
 /* Main function */
@@ -155,3 +168,5 @@ main = () => {
 }
 
 main();
+
+module.exports = Parser;
