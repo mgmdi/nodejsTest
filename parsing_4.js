@@ -30,16 +30,19 @@ class Parser {
             case '3':
                 file = fs.readFileSync('./test_3', 'utf8'); 
                 break;
+            case '4':
+                file = fs.readFileSync('./test_4', 'utf8'); 
+                break;
         }
         const lines = file.split(/\r?\n/);
         // tokenize all lines
         tokenizer.debug = true;
         lines.forEach((line) => {
             if(/\S/.test(line)){
-                if(!/^[a-zA-Z]+/.test(line)){
+                if(!/^[a-zA-Z\-]+/.test(line) && !line.startsWith('-')){
                     // Prepare line
                     line = line.replace(/\*/g, '');
-                    tokenizer.rule('number', /^[\d\.,\-]+(D|C)?/);
+                    tokenizer.rule('number', /^[\d\.,\-/]+(D|C)?/);
                     tokenizer.rule('word', /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/);
                     const tokList = tokenizer.tokenize(line);
                     this.tokens.push(this.convertTokensToTypes(tokList));
@@ -52,6 +55,9 @@ class Parser {
 
     convertTokensToTypes(tokList){
         tokList = tokList.filter( value => value.toLowerCase() !== 'd' && value.toLowerCase() !==  'c');
+        if(this.level == '4'){
+            tokList.shift();
+        }
         const descriptionHasNumber = tokList.length > 6;
         const classifier = tokList[0].replace(/\./g,'');
         const description = descriptionHasNumber ? tokList[1] + ' ' + tokList[2] : tokList[1];
@@ -113,7 +119,7 @@ class Parser {
         this.parserTokenizer();
         this.setParent();
         this.convertToObjects();
-        console.log(this.objects)
+        console.log(this.objects) 
     }
 
     // METHODS FOR CHECKING CLASSIFIER
@@ -155,7 +161,7 @@ class Parser {
 /* Main function */
 main = () => {
     const level = process.argv[2];
-    if(['1', '2','3'].includes(level)){
+    if(['1', '2','3','4'].includes(level)){
         const parser = new Parser(process.argv[2]);
         parser.returnCollection();
     }

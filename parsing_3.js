@@ -36,7 +36,7 @@ class Parser {
         tokenizer.debug = true;
         lines.forEach((line) => {
             if(/\S/.test(line)){
-                if(!/^[a-zA-Z]+/.test(line)){
+                if(!/^[a-zA-Z\-]+/.test(line)){
                     // Prepare line
                     line = line.replace(/\*/g, '');
                     tokenizer.rule('number', /^[\d\.,\-/]+(D|C)?/);
