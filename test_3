@@ -1,0 +1,9 @@
+Balancete Contábil									Pág.: 1 de 3
+Empresa: Space Exploration Technologies Corp. - CNPJ: 99.999.999/9999-99									Software Contábil
+Período: 01/01/2018 a 31/01/2018; Estabelecimento(s): Todos; Centro(s) de Resultados: Todos									
+Conta	Descrição		Saldo Anterior		Débitos	Créditos			Saldo Atual
+1	*** Ativo ***	82997,66	D		247726,89	240377,5		90347,05	D
+11	Ativo Circulante	32573,59	D		247726,89	239574,01		40726,47	D
+111	Disponível	24059,92	D		200259,03	187061,24		37257,71	D
+11101	Caixa Geral	3758,78	D		145995,84	146317,86		3436,76	D
+111010001	Caixa Fixo	3758,78	D		145995,84	146317,86		3436,76	D
