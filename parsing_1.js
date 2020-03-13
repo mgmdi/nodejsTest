@@ -90,7 +90,7 @@ class Parser {
     Method that checks if classifiers start with same digits
     */
     checkIfClassMatch(classParent, classChild){
-        for (let index = 0; index < classParent.length; index++) {
+        for (let index = 0; index < classChild.length; index++) {
             if(!this.compareClassifiers(classParent, classChild, index)){
                 if(index > 0){
                     return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
@@ -112,7 +112,7 @@ class Parser {
     Method that check rest of classifier after checkIfClassMatch
     */
     checkRestOfClassifier(classifier){
-        for (let index = 0; index < classifier.length; index++) {
+        for (let index = 0; classifier && index < classifier.length; index++) {
             if(classifier.charAt(index) !== '0'){
                 return false;
             }

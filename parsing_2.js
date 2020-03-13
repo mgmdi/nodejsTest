@@ -36,14 +36,14 @@ class Parser {
                 tokenizer.rule('number', /^[\d\.,\-]+D?/);
                 tokenizer.rule('word', /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/);
                 const tokList = tokenizer.tokenize(line);
-                this.tokens.push(this.convertTokens(tokList));
+                this.tokens.push(this.convertTokensToTypes(tokList));
                 console.log('TOKENS')
                 console.log(this.tokens)
             }
         });
     }
 
-    convertTokens(tokList){
+    convertTokensToTypes(tokList){
         const descriptionHasNumber = tokList.length > 6;
         const classifier = tokList[0].replace(/\./g,'');
         const description = descriptionHasNumber ? tokList[1] + ' ' + tokList[2] : tokList[1];
@@ -63,12 +63,16 @@ class Parser {
         const tokensList = [...this.tokens];
         for (const [i,value] of this.tokens.entries()) {
             const childClassifier = value[0];
+            console.log('CHILD CLASSIFIER -----------------')
+            console.log(childClassifier)
             const newTokenList = tokensList.slice(0,i).reverse();
             for (const tokens of newTokenList) {
                 const parentCandidate = tokens[0];
                 if(this.checkIfClassMatch(parentCandidate, childClassifier))
                 {
                     value.push(parentCandidate);
+                    console.log('PARENT')
+                    console.log(parentCandidate)
                     break;
                 }
 
@@ -79,15 +83,15 @@ class Parser {
     /*
     Method that convert tokens into JSON objects
     */
-   convertToObjects(){
+    convertToObjects(){
     this.tokens.forEach((token) => {
         const object = {
             description: token[1],
             classifier: token[0],
-            openingBalance: +token[2],
-            debit: +token[3],
-            credit: +token[4],
-            finalBalance: +token[5],
+            openingBalance: token[2],
+            debit: token[3],
+            credit: token[4],
+            finalBalance: token[5],
             parent: token[6] ? token[6] : null
         };
         this.objects.push(object);
@@ -99,9 +103,9 @@ class Parser {
     */
     returnCollection(){
         this.parserTokenizer();
-        // this.setParent();
-        // this.convertToObjects();
-        // console.log(this.objects)
+        this.setParent();
+        this.convertToObjects();
+        console.log(this.objects)
     }
 
     // METHODS FOR CHECKING CLASSIFIER
@@ -110,7 +114,7 @@ class Parser {
     Method that checks if classifiers start with same digits
     */
     checkIfClassMatch(classParent, classChild){
-        for (let index = 0; index < classParent.length; index++) {
+        for (let index = 0; index < classChild.length; index++) {
             if(!this.compareClassifiers(classParent, classChild, index)){
                 if(index > 0){
                     return this.checkRestOfClassifier(classParent.substring(index, classParent.length));
@@ -132,7 +136,7 @@ class Parser {
     Method that check rest of classifier after checkIfClassMatch
     */
     checkRestOfClassifier(classifier){
-        for (let index = 0; index < classifier.length; index++) {
+        for (let index = 0; classifier && index < classifier.length; index++) {
             if(classifier.charAt(index) !== '0'){
                 return false;
             }
