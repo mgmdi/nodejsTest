@@ -39,7 +39,7 @@ class Parser {
                 if(!/^[a-zA-Z]+/.test(line)){
                     // Prepare line
                     line = line.replace(/\*/g, '');
-                    tokenizer.rule('number', /^[\d\.,\-/]+(D|C)?/);
+                    tokenizer.rule('number', /^[\d\.,\-]+(D|C)?/);
                     tokenizer.rule('word', /^[A-Za-z\u00C0-\u00ff\s\.\-]+:?/);
                     const tokList = tokenizer.tokenize(line);
                     this.tokens.push(this.convertTokensToTypes(tokList));
